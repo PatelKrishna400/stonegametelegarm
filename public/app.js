@@ -211,6 +211,9 @@ function updateStatsUI(data) {
 
     // Milestones
     renderMilestones(data.total_hits, data.coins);
+
+    // Restore stone crack state on load
+    updateStoneCracks(data.total_hits);
 }
 
 function renderMilestones(hits, coins) {
@@ -266,10 +269,10 @@ async function hitStore() {
 
     isHitting = true;
 
-    // Visual feedback
-    const building = $('store-building');
-    building.classList.add('hit-anim');
-    building.addEventListener('animationend', () => building.classList.remove('hit-anim'), { once: true });
+    // Stone shake animation
+    const stoneWrap = $('store-building');
+    stoneWrap.classList.add('hit-anim');
+    stoneWrap.addEventListener('animationend', () => stoneWrap.classList.remove('hit-anim'), { once: true });
 
     // Spawn floating coins
     spawnFloatingCoin();
@@ -290,7 +293,7 @@ async function hitStore() {
     // Show hit feedback text
     showHitFeedback(`+${data.coinsEarned}🪙${data.luckyExtra > 0 ? ' 🍀' : ''}`);
 
-    // Update UI
+    // Update UI stats
     $('stat-coins').textContent = formatCoins(data.newCoins);
     $('stat-energy').textContent = data.newEnergy;
     $('stat-hits').textContent = formatCoins(data.totalHits);
@@ -307,8 +310,8 @@ async function hitStore() {
 
     renderMilestones(data.totalHits, data.newCoins);
 
-    // Add crack to building (fun visual)
-    addCrack();
+    // 🪨 Update stone crack visuals
+    updateStoneCracks(data.totalHits);
 
     // Level up?
     if (data.leveledUp) {
@@ -316,6 +319,7 @@ async function hitStore() {
         $('levelup-modal').classList.remove('hidden');
     }
 }
+
 
 $('hit-btn').addEventListener('click', hitStore);
 $('store-building').addEventListener('click', hitStore);
@@ -369,31 +373,89 @@ function showHitFeedback(text) {
     setTimeout(() => fb.classList.add('hidden'), 1300);
 }
 
-// Building cracks (up to 10)
-let crackCount = 0;
-function addCrack() {
-    if (crackCount >= 10) {
-        $('store-cracks').innerHTML = '';
-        crackCount = 0;
+// =====================================================
+//  STONE CRACK SYSTEM
+// =====================================================
+
+// Crack thresholds for each SVG layer
+const CRACK_THRESHOLDS = [
+    { id: 'crack-1', at: 20 },
+    { id: 'crack-2', at: 50 },
+    { id: 'crack-3', at: 100 },
+    { id: 'crack-4', at: 500 },
+];
+
+// Max hits considered for the durability bar (resets after shattering)
+const DURABILITY_CYCLE = 500;
+
+function updateStoneCracks(totalHits) {
+    // Show crack SVG layers progressively
+    CRACK_THRESHOLDS.forEach(c => {
+        const el = document.getElementById(c.id);
+        if (!el) return;
+        if (totalHits >= c.at) {
+            el.classList.add('visible');
+            el.style.display = '';
+        }
+    });
+
+    // Darken stone body as cracks accumulate
+    const stoneBody = document.getElementById('stone-body');
+    if (stoneBody) {
+        stoneBody.classList.remove('cracked-1', 'cracked-2', 'cracked-3', 'cracked-4');
+        if (totalHits >= 500) stoneBody.classList.add('cracked-4');
+        else if (totalHits >= 100) stoneBody.classList.add('cracked-3');
+        else if (totalHits >= 50) stoneBody.classList.add('cracked-2');
+        else if (totalHits >= 20) stoneBody.classList.add('cracked-1');
     }
-    crackCount++;
-    const crack = document.createElement('div');
-    const x = 10 + Math.random() * 80;
-    const y = 10 + Math.random() * 80;
-    const rotation = Math.random() * 180;
-    crack.style.cssText = `
-    position: absolute;
-    left: ${x}%;
-    top: ${y}%;
-    width: ${15 + Math.random() * 25}px;
-    height: 2px;
-    background: rgba(255,100,100,0.6);
-    transform: rotate(${rotation}deg);
-    border-radius: 2px;
-    pointer-events: none;
-  `;
-    $('store-cracks').appendChild(crack);
+
+    // Update crack health bar
+    const hitsInCycle = totalHits % DURABILITY_CYCLE || (totalHits >= DURABILITY_CYCLE ? DURABILITY_CYCLE : totalHits);
+    const durabilityPct = Math.max(0, 100 - (hitsInCycle / DURABILITY_CYCLE) * 100);
+    const bar = document.getElementById('crack-bar');
+    const pctText = document.getElementById('crack-pct-text');
+    if (bar) {
+        bar.style.width = durabilityPct + '%';
+        bar.classList.remove('dmg-25', 'dmg-50', 'dmg-75', 'dmg-critical');
+        if (durabilityPct <= 10) bar.classList.add('dmg-critical');
+        else if (durabilityPct <= 25) bar.classList.add('dmg-75');
+        else if (durabilityPct <= 50) bar.classList.add('dmg-50');
+        else if (durabilityPct <= 75) bar.classList.add('dmg-25');
+    }
+    if (pctText) pctText.textContent = Math.round(durabilityPct) + '%';
+
+    // Spawn dust particles inside the SVG on each hit
+    spawnStoneDust();
 }
+
+function spawnStoneDust() {
+    const dustGroup = document.getElementById('stone-dust');
+    if (!dustGroup) return;
+    for (let i = 0; i < 5; i++) {
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        const x = 80 + Math.random() * 140;
+        const y = 60 + Math.random() * 140;
+        const r = 1.5 + Math.random() * 3;
+        circle.setAttribute('cx', x);
+        circle.setAttribute('cy', y);
+        circle.setAttribute('r', r);
+        circle.setAttribute('fill', `rgba(180,160,140,${0.5 + Math.random() * 0.4})`);
+        circle.style.animation = `dustFade 0.7s ease forwards`;
+        dustGroup.appendChild(circle);
+        setTimeout(() => circle.remove(), 750);
+    }
+}
+
+// Inject dust fade keyframe
+const dustStyle = document.createElement('style');
+dustStyle.textContent = `
+  @keyframes dustFade {
+    0%   { opacity: 1; transform: translate(0, 0) scale(1); }
+    100% { opacity: 0; transform: translate(${Math.random() > 0.5 ? '' : '-'}${5 + Math.random() * 15}px, -${10 + Math.random() * 20}px) scale(0.3); }
+  }
+`;
+document.head.appendChild(dustStyle);
+
 
 // =====================================================
 //  UPGRADES
