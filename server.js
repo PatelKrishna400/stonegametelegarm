@@ -19,6 +19,7 @@ db.exec(`
     username TEXT UNIQUE NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
+    telegram_id TEXT UNIQUE,
     coins INTEGER DEFAULT 0,
     total_hits INTEGER DEFAULT 0,
     level INTEGER DEFAULT 1,
@@ -99,7 +100,11 @@ db.exec(`
   );
 `);
 
-// ─── Seed upgrades ─────────────────────────────────────────
+// ─── Migrate existing DB (add new columns safely) ──────────
+try { db.exec(`ALTER TABLE users ADD COLUMN telegram_id TEXT UNIQUE`); } catch { }
+
+// ─── Seed upgrades ──────────────────────────────────────────
+
 if (db.prepare('SELECT COUNT(*) as c FROM upgrades').get().c === 0) {
     const ins = db.prepare('INSERT INTO upgrades (name,description,cost,type,value,icon) VALUES(?,?,?,?,?,?)');
     ins.run('Iron Hammer', 'Doubles your hit damage', 500, 'damage', 2, '🔨');
@@ -196,6 +201,57 @@ app.post('/api/login', (req, res) => {
     const token = jwt.sign({ userId: user.id, isAdmin: user.is_admin === 1 }, JWT_SECRET, { expiresIn: '7d' });
     res.json({ token, userId: user.id, username: user.username, isAdmin: user.is_admin === 1 });
 });
+
+// ──────────────────────────────────────────────────────────────
+//  TELEGRAM MINI APP — Auto Auth (no password needed)
+// ──────────────────────────────────────────────────────────────
+app.post('/api/auth/telegram', (req, res) => {
+    // In production you'd verify req.body.initData with HMAC using your Bot Token.
+    // For now we trust the parsed user object sent by the client.
+    const { id, first_name, last_name, username } = req.body;
+    if (!id) return res.status(400).json({ error: 'Telegram user id required' });
+
+    const telegramId = String(id);
+    const displayName = username || first_name || ('user_' + telegramId);
+    // Unique fallback email so the NOT NULL / UNIQUE constraint is satisfied
+    const fakeEmail = `tg_${telegramId}@telegram.internal`;
+
+    try {
+        // Try to find existing Telegram user
+        let user = db.prepare('SELECT * FROM users WHERE telegram_id=?').get(telegramId);
+
+        if (!user) {
+            // Auto-register
+            const hash = bcrypt.hashSync(telegramId + '_tg', 6); // deterministic dummy password
+            let safeName = displayName.replace(/[^a-zA-Z0-9_]/g, '_').slice(0, 32);
+            // Ensure username uniqueness
+            const existing = db.prepare('SELECT id FROM users WHERE username=?').get(safeName);
+            if (existing) safeName = safeName + '_' + telegramId.slice(-4);
+
+            const r = db.prepare(
+                'INSERT INTO users (username,email,password,telegram_id) VALUES(?,?,?,?)'
+            ).run(safeName, fakeEmail, hash, telegramId);
+
+            db.prepare('INSERT OR IGNORE INTO leaderboard (user_id,coins,total_hits) VALUES(?,0,0)').run(r.lastInsertRowid);
+            user = db.prepare('SELECT * FROM users WHERE id=?').get(r.lastInsertRowid);
+        } else {
+            // Update username if changed in Telegram
+            if (user.username !== displayName) {
+                try {
+                    db.prepare('UPDATE users SET username=? WHERE id=?').run(displayName.replace(/[^a-zA-Z0-9_]/g, '_').slice(0, 32), user.id);
+                    user.username = displayName;
+                } catch { /* username collision – keep old one */ }
+            }
+        }
+
+        const token = jwt.sign({ userId: user.id, isAdmin: user.is_admin === 1 }, JWT_SECRET, { expiresIn: '30d' });
+        res.json({ token, userId: user.id, username: user.username, isAdmin: user.is_admin === 1 });
+    } catch (err) {
+        console.error('Telegram auth error:', err.message);
+        res.status(500).json({ error: 'Auth failed: ' + err.message });
+    }
+});
+
 
 // ══════════════════════════════════════════════════════════════
 //  USER ROUTES

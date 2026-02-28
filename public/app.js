@@ -48,104 +48,94 @@ async function apiFetch(path, method = 'GET', body = null) {
 }
 
 // =====================================================
-//  AUTH
+//  AUTH — Telegram Mini App (no login form needed)
 // =====================================================
 
+function setLoadingMsg(msg) {
+    const el = $('tg-loading-msg');
+    if (el) el.textContent = msg;
+}
+
 function showApp() {
-    $('auth-overlay').classList.add('hidden');
+    const overlay = $('tg-loading');
+    if (overlay) overlay.classList.add('hidden');
     $('app').classList.remove('hidden');
     $('nav-username').textContent = currentUser.username;
     loadProfile();
     startEnergyRegen();
 }
 
-function showAuth() {
-    $('auth-overlay').classList.remove('hidden');
-    $('app').classList.add('hidden');
+function showError(id, msg) {
+    const el = $(id);
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.remove('hidden');
 }
 
-$('go-register').addEventListener('click', () => {
-    $('login-form').classList.remove('active');
-    $('register-form').classList.add('active');
-    $('login-error').classList.add('hidden');
-});
-
-$('go-login').addEventListener('click', () => {
-    $('register-form').classList.remove('active');
-    $('login-form').classList.add('active');
-    $('reg-error').classList.add('hidden');
-});
-
-$('login-btn').addEventListener('click', async () => {
-    const email = $('login-email').value.trim();
-    const password = $('login-password').value;
-    if (!email || !password) { showError('login-error', 'Please fill all fields'); return; }
-
-    $('login-btn').textContent = 'Logging in…';
-    $('login-btn').disabled = true;
-
-    const data = await apiFetch('/api/login', 'POST', { email, password });
-    $('login-btn').textContent = 'Login & Play';
-    $('login-btn').disabled = false;
-
-    if (data.error) { showError('login-error', data.error); return; }
-    token = data.token;
-    localStorage.setItem('hs_token', token);
-    currentUser = { id: data.userId, username: data.username };
-    showApp();
-});
-
-$('register-btn').addEventListener('click', async () => {
-    const username = $('reg-username').value.trim();
-    const email = $('reg-email').value.trim();
-    const password = $('reg-password').value;
-    if (!username || !email || !password) { showError('reg-error', 'Please fill all fields'); return; }
-
-    $('register-btn').textContent = 'Creating…';
-    $('register-btn').disabled = true;
-
-    const data = await apiFetch('/api/register', 'POST', { username, email, password });
-    $('register-btn').textContent = 'Create & Play';
-    $('register-btn').disabled = false;
-
-    if (data.error) { showError('reg-error', data.error); return; }
-    token = data.token;
-    localStorage.setItem('hs_token', token);
-    currentUser = { id: data.userId, username: data.username };
-    showApp();
-});
-
+// Logout hides app but just shows loading splash (can't "log out" of Telegram)
 $('logout-btn').addEventListener('click', () => {
     token = null;
     currentUser = null;
     localStorage.removeItem('hs_token');
     if (energyInterval) clearInterval(energyInterval);
-    showAuth();
+    // Re-run Telegram auth
+    telegramAutoLogin();
 });
 
-function showError(id, msg) {
-    const el = $(id);
-    el.textContent = msg;
-    el.classList.remove('hidden');
+// ─── TELEGRAM AUTO-LOGIN ────────────────────────────────────
+async function telegramAutoLogin() {
+    setLoadingMsg('Connecting to Telegram…');
+
+    // 1️⃣  Try Telegram WebApp
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+        tg.ready();
+        tg.expand();
+        const tgUser = tg.initDataUnsafe?.user;
+        if (tgUser && tgUser.id) {
+            setLoadingMsg(`Welcome, ${tgUser.first_name || tgUser.username}!`);
+            const data = await apiFetch('/api/auth/telegram', 'POST', tgUser);
+            if (!data.error) {
+                token = data.token;
+                localStorage.setItem('hs_token', token);
+                currentUser = { id: data.userId, username: data.username };
+                showApp();
+                return;
+            }
+        }
+    }
+
+    // 2️⃣  Fallback: cached token (user opened in browser)
+    if (token) {
+        setLoadingMsg('Restoring session…');
+        const data = await apiFetch('/api/user/profile');
+        if (!data.error) {
+            currentUser = { id: data.id, username: data.username };
+            showApp();
+            return;
+        }
+        localStorage.removeItem('hs_token');
+        token = null;
+    }
+
+    // 3️⃣  Dev / browser fallback — auto-create a guest account
+    setLoadingMsg('Creating guest session…');
+    const guestId = localStorage.getItem('hs_guest_id') || ('guest_' + Math.random().toString(36).slice(2, 10));
+    localStorage.setItem('hs_guest_id', guestId);
+    const guestUser = { id: guestId, first_name: 'Guest', username: guestId };
+    const data = await apiFetch('/api/auth/telegram', 'POST', guestUser);
+    if (!data.error) {
+        token = data.token;
+        localStorage.setItem('hs_token', token);
+        currentUser = { id: data.userId, username: data.username };
+        showApp();
+    } else {
+        setLoadingMsg('⚠️ Could not connect. Please retry.');
+    }
 }
 
-// Allow login on Enter key
-['login-email', 'login-password'].forEach(id => {
-    $(id).addEventListener('keydown', e => { if (e.key === 'Enter') $('login-btn').click(); });
-});
-['reg-username', 'reg-email', 'reg-password'].forEach(id => {
-    $(id).addEventListener('keydown', e => { if (e.key === 'Enter') $('register-btn').click(); });
-});
-
-// Auto-login if token exists
-(async function checkAutoLogin() {
-    if (token) {
-        const data = await apiFetch('/api/user/profile');
-        if (data.error) { localStorage.removeItem('hs_token'); token = null; showAuth(); return; }
-        currentUser = { id: data.id, username: data.username };
-        showApp();
-    }
-})();
+// Start auth immediately on page load
+telegramAutoLogin();
 
 // =====================================================
 //  NAVIGATION TABS

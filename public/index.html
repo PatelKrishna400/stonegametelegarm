@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -12,54 +12,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 
 <body>
 
-    <!-- ========== AUTH OVERLAY ========== -->
-    <div id="auth-overlay" class="auth-overlay">
-        <div class="auth-container">
-            <div class="auth-logo">
-                <span class="logo-icon">🪨</span>
-                <h1 class="logo-title">STONE CRUSH</h1>
-                <p class="logo-sub">Smash the Stone · Win Coins · Rule the Board</p>
-            </div>
 
-            <!-- Login Form -->
-            <div id="login-form" class="auth-form active">
-                <h2>Welcome Back</h2>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="login-email" placeholder="your@email.com" />
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="login-password" placeholder="••••••••" />
-                </div>
-                <div id="login-error" class="form-error hidden"></div>
-                <button id="login-btn" class="btn btn-primary btn-full">Login &amp; Play</button>
-                <p class="auth-switch">No account? <span id="go-register">Sign Up</span></p>
-            </div>
-
-            <!-- Register Form -->
-            <div id="register-form" class="auth-form">
-                <h2>Create Account</h2>
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" id="reg-username" placeholder="CoinHunter99" />
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="reg-email" placeholder="your@email.com" />
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="reg-password" placeholder="Min 6 characters" />
-                </div>
-                <div id="reg-error" class="form-error hidden"></div>
-                <button id="register-btn" class="btn btn-primary btn-full">Create & Play</button>
-                <p class="auth-switch">Have an account? <span id="go-login">Login</span></p>
-            </div>
+    <!-- Loading Splash – auto-dismissed after Telegram login -->
+    <div id="tg-loading" class="tg-loading-overlay">
+        <div class="tg-loading-box">
+            <div class="tg-loading-icon">🪨</div>
+            <h2 class="tg-loading-title">STONE CRUSH</h2>
+            <div class="tg-loading-spinner"></div>
+            <p id="tg-loading-msg">Connecting…</p>
         </div>
     </div>
 
