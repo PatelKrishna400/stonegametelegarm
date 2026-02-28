@@ -11,7 +11,1652 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet" />
-    <link rel="stylesheet" href="style.css" />
+    <style>
+/* =====================================================
+   HIT STORE — Premium Dark Theme CSS
+   ===================================================== */
+
+/* ---------- Reset & Root Variables ---------- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg-base: #0a0b0f;
+    --bg-card: #12141a;
+    --bg-card2: #1a1d27;
+    --bg-card3: #22253a;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-glow: rgba(255, 210, 60, 0.35);
+    --gold: #ffd23c;
+    --gold-dark: #c9940a;
+    --gold-light: #ffe880;
+    --purple: #9b5de5;
+    --purple-light: #c77dff;
+    --teal: #00f5d4;
+    --red: #ff4d6d;
+    --green: #36d399;
+    --text-main: #f0f0f5;
+    --text-muted: #7b7f9a;
+    --text-dim: #474b65;
+    --radius: 14px;
+    --radius-lg: 22px;
+    --shadow-gold: 0 0 30px rgba(255, 210, 60, 0.25), 0 0 60px rgba(255, 210, 60, 0.08);
+    --shadow-card: 0 4px 30px rgba(0, 0, 0, 0.5);
+    --transition: 0.25s cubic-bezier(.4, 0, .2, 1);
+}
+
+html,
+body {
+    height: 100%;
+    font-family: 'Outfit', system-ui, sans-serif;
+    background: var(--bg-base);
+    color: var(--text-main);
+    overflow-x: hidden;
+}
+
+/* ── Telegram Loading Splash ──────────────────────── */
+.tg-loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at 50% 0%, #1a0f3c 0%, #0a0b0f 70%);
+    transition: opacity 0.4s ease;
+}
+
+.tg-loading-overlay.hidden {
+    display: none;
+}
+
+.tg-loading-box {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+.tg-loading-icon {
+    font-size: 72px;
+    animation: stonePulse 1.8s ease-in-out infinite;
+}
+
+@keyframes stonePulse {
+
+    0%,
+    100% {
+        transform: scale(1) rotate(-3deg);
+    }
+
+    50% {
+        transform: scale(1.12) rotate(3deg);
+    }
+}
+
+.tg-loading-title {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, #ffd23c, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.tg-loading-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid rgba(255, 210, 60, 0.2);
+    border-top-color: #ffd23c;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+#tg-loading-msg {
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-card);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--bg-card3);
+    border-radius: 99px;
+}
+
+/* ============================================================
+   AUTH OVERLAY
+   ============================================================ */
+
+.auth-overlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, #1a0f3c 0%, #0a0b0f 65%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+.auth-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='1' fill='rgba(255,210,60,0.12)'/%3E%3C/svg%3E") repeat;
+    pointer-events: none;
+}
+
+.auth-container {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 44px 40px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: var(--shadow-gold), var(--shadow-card);
+    backdrop-filter: blur(20px);
+}
+
+.auth-logo {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.logo-icon {
+    font-size: 56px;
+    display: block;
+    filter: drop-shadow(0 0 20px rgba(255, 210, 60, 0.6));
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.logo-title {
+    font-size: 32px;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--purple-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 4px;
+    margin: 8px 0 4px;
+}
+
+.logo-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+}
+
+.auth-form {
+    display: none;
+}
+
+.auth-form.active {
+    display: block;
+}
+
+.auth-form h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.form-group input {
+    width: 100%;
+    background: var(--bg-card2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--text-main);
+    outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.form-group input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(255, 210, 60, 0.12);
+}
+
+.form-group input::placeholder {
+    color: var(--text-dim);
+}
+
+.form-error {
+    background: rgba(255, 77, 109, 0.12);
+    border: 1px solid rgba(255, 77, 109, 0.3);
+    color: var(--red);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 14px;
+}
+
+.auth-switch {
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: 18px;
+}
+
+.auth-switch span {
+    color: var(--gold);
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 15px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all var(--transition);
+    letter-spacing: 0.3px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #1a1200;
+    padding: 12px 24px;
+    box-shadow: 0 4px 20px rgba(255, 210, 60, 0.35);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(255, 210, 60, 0.5);
+    filter: brightness(1.1);
+}
+
+.btn-primary:active {
+    transform: scale(0.97);
+}
+
+.btn-full {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, var(--red), #c9364f);
+    color: white;
+    padding: 10px 20px;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--green), #1ea67e);
+    color: #001a11;
+    padding: 10px 20px;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--text-muted);
+    padding: 10px 20px;
+}
+
+.btn-outline:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    padding: 8px 14px;
+    font-size: 13px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.btn-ghost:hover {
+    border-color: var(--red);
+    color: var(--red);
+}
+
+.btn-sm {
+    padding: 7px 14px;
+    font-size: 13px;
+}
+
+.btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none !important;
+    filter: none !important;
+}
+
+/* ============================================================
+   MAIN APP LAYOUT
+   ============================================================ */
+
+.app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ---------- Navbar ---------- */
+.navbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    height: 64px;
+    background: rgba(18, 20, 26, 0.95);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    flex-shrink: 0;
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    min-width: 130px;
+}
+
+.nav-tabs {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+    justify-content: center;
+}
+
+.nav-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+    white-space: nowrap;
+}
+
+.nav-tab:hover {
+    background: var(--bg-card2);
+    color: var(--text-main);
+    border-color: var(--border);
+}
+
+.nav-tab.active {
+    background: linear-gradient(135deg, rgba(255, 210, 60, 0.15), rgba(155, 93, 229, 0.12));
+    border-color: rgba(255, 210, 60, 0.35);
+    color: var(--gold);
+}
+
+.nav-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 130px;
+    justify-content: flex-end;
+}
+
+.nav-username {
+    font-weight: 700;
+    color: var(--text-main);
+    font-size: 14px;
+}
+
+/* ---------- Coins Banner ---------- */
+.coins-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 24px;
+    background: linear-gradient(180deg, rgba(255, 210, 60, 0.06) 0%, transparent 100%);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+}
+
+.stat-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    padding: 8px 18px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-main);
+    transition: all var(--transition);
+}
+
+.stat-chip .stat-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.energy-chip {
+    border-color: rgba(0, 245, 212, 0.25);
+}
+
+.energy-chip:hover {
+    border-color: var(--teal);
+    box-shadow: 0 0 12px rgba(0, 245, 212, 0.15);
+}
+
+/* ---------- XP Bar ---------- */
+.xp-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 24px;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+}
+
+.xp-bar-track {
+    flex: 1;
+    height: 8px;
+    background: var(--bg-card3);
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.xp-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple), var(--purple-light));
+    border-radius: 99px;
+    transition: width 0.5s ease;
+    box-shadow: 0 0 10px rgba(155, 93, 229, 0.5);
+}
+
+.xp-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    min-width: 120px;
+    text-align: right;
+}
+
+/* ============================================================
+   TAB CONTENT
+   ============================================================ */
+
+.tab-content {
+    display: none;
+    padding: 28px 24px;
+    flex: 1;
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.section-header h2 {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.section-header p {
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-top: 6px;
+}
+
+/* ============================================================
+   GAME TAB
+   ============================================================ */
+
+.game-area {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 28px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* ---------- Stone Rock ---------- */
+.store-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+}
+
+.stone-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.stone-svg {
+    width: 280px;
+    height: 240px;
+    filter: drop-shadow(0 12px 30px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 20px rgba(80, 80, 80, 0.3));
+    transition: filter 0.15s ease;
+}
+
+.stone-svg:hover {
+    filter: drop-shadow(0 14px 35px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 30px rgba(255, 210, 60, 0.15));
+}
+
+/* stone shake when hit */
+.stone-wrapper.hit-anim .stone-svg {
+    animation: stone-shake 0.22s ease;
+}
+
+@keyframes stone-shake {
+    0% {
+        transform: scale(1) translate(0, 0) rotate(0deg);
+    }
+
+    20% {
+        transform: scale(0.95) translate(-5px, 3px) rotate(-1.5deg);
+    }
+
+    45% {
+        transform: scale(0.97) translate(5px, -3px) rotate(1.5deg);
+    }
+
+    65% {
+        transform: scale(0.96) translate(-3px, 2px) rotate(-0.8deg);
+    }
+
+    85% {
+        transform: scale(0.98) translate(2px, -1px) rotate(0.4deg);
+    }
+
+    100% {
+        transform: scale(1) translate(0, 0) rotate(0deg);
+    }
+}
+
+/* Stone body colour shift based on damage level */
+.stone-poly.cracked-1 {
+    fill: url(#stoneGrad1);
+}
+
+.stone-poly.cracked-2 {
+    fill: url(#stoneGrad2);
+}
+
+.stone-poly.cracked-3 {
+    fill: url(#stoneGrad3);
+}
+
+.stone-poly.cracked-4 {
+    fill: url(#stoneGrad4);
+}
+
+/* Crack SVG elements */
+.stone-crack {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.stone-crack.visible {
+    opacity: 1;
+}
+
+/* ---------- Crack Health Bar ---------- */
+.crack-bar-wrap {
+    width: 280px;
+    margin-top: 8px;
+}
+
+.crack-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.crack-bar-track {
+    height: 14px;
+    background: var(--bg-card3);
+    border-radius: 99px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.crack-bar-fill {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #5a5a5a, #8a8a8a, #aaa);
+    border-radius: 99px;
+    transition: width 0.4s ease, background 0.6s ease;
+    box-shadow: 0 0 8px rgba(150, 150, 150, 0.4);
+}
+
+/* Crack bar colour changes as stone gets more damaged */
+.crack-bar-fill.dmg-25 {
+    background: linear-gradient(90deg, #7a5a2a, #c4903a);
+    box-shadow: 0 0 8px rgba(196, 144, 58, 0.4);
+}
+
+.crack-bar-fill.dmg-50 {
+    background: linear-gradient(90deg, #7a3a1a, #d4602a);
+    box-shadow: 0 0 8px rgba(212, 96, 42, 0.4);
+}
+
+.crack-bar-fill.dmg-75 {
+    background: linear-gradient(90deg, #6a1010, #cc3020);
+    box-shadow: 0 0 12px rgba(204, 48, 32, 0.5);
+}
+
+.crack-bar-fill.dmg-critical {
+    background: linear-gradient(90deg, #4a0000, #990000);
+    box-shadow: 0 0 16px rgba(180, 0, 0, 0.7);
+    animation: crack-pulse 0.5s ease infinite alternate;
+}
+
+@keyframes crack-pulse {
+    from {
+        filter: brightness(1);
+    }
+
+    to {
+        filter: brightness(1.4);
+    }
+}
+
+/* Floating coins on hit */
+.hit-feedback {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--gold);
+    text-shadow: 0 0 10px rgba(255, 210, 60, 0.8);
+    pointer-events: none;
+    animation: float-up 1.2s ease forwards;
+    z-index: 10;
+}
+
+@keyframes float-up {
+    0% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-70px) scale(1.3);
+    }
+}
+
+/* ---------- Hit Button ---------- */
+.hit-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 130px;
+    height: 130px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark), #e6a800);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 30px rgba(255, 210, 60, 0.4), 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 -4px 0 rgba(0, 0, 0, 0.25);
+    transition: all 0.12s ease;
+    font-family: inherit;
+}
+
+.hit-button:hover {
+    box-shadow: 0 0 50px rgba(255, 210, 60, 0.6), 0 6px 30px rgba(0, 0, 0, 0.4), inset 0 -4px 0 rgba(0, 0, 0, 0.25);
+    transform: translateY(-3px) scale(1.04);
+}
+
+.hit-button:active {
+    transform: scale(0.92) translateY(3px);
+    box-shadow: 0 0 20px rgba(255, 210, 60, 0.3), inset 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.hit-btn-icon {
+    font-size: 40px;
+    line-height: 1;
+}
+
+.hit-btn-text {
+    font-size: 16px;
+    font-weight: 900;
+    color: #1a1200;
+    letter-spacing: 2px;
+}
+
+.hit-hint {
+    font-size: 13px;
+    color: var(--text-dim);
+}
+
+.hit-hint kbd {
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: inherit;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* ---------- Stats Panel ---------- */
+.stats-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-card);
+}
+
+.panel-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+}
+
+.stat-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.stat-row:last-of-type {
+    border-bottom: none;
+}
+
+.stat-row strong {
+    color: var(--gold);
+    font-size: 16px;
+}
+
+/* ---------- Energy Bar ---------- */
+.energy-bar-section {
+    margin-top: 20px;
+}
+
+.energy-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.energy-bar-track {
+    height: 12px;
+    background: var(--bg-card3);
+    border-radius: 99px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.energy-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), #00d4b8);
+    border-radius: 99px;
+    transition: width 0.8s ease;
+    box-shadow: 0 0 10px rgba(0, 245, 212, 0.4);
+    width: 100%;
+}
+
+/* ---------- Milestones ---------- */
+.milestone-section {
+    margin-top: 22px;
+}
+
+.milestone-section h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.milestones-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.milestone-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    font-size: 13px;
+}
+
+.milestone-item.achieved {
+    background: linear-gradient(135deg, rgba(255, 210, 60, 0.1), rgba(155, 93, 229, 0.08));
+    border-color: rgba(255, 210, 60, 0.3);
+    color: var(--gold);
+}
+
+.milestone-item .ms-icon {
+    font-size: 18px;
+}
+
+.milestone-item .ms-text {
+    flex: 1;
+    color: var(--text-muted);
+}
+
+.milestone-item.achieved .ms-text {
+    color: var(--gold-light);
+}
+
+.milestone-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--green);
+}
+
+/* ============================================================
+   UPGRADES GRID
+   ============================================================ */
+
+.upgrades-grid,
+.store-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 18px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.upgrade-card,
+.store-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: all var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.upgrade-card::before,
+.store-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0;
+    transition: opacity var(--transition);
+}
+
+.upgrade-card:hover::before,
+.store-card:hover::before {
+    opacity: 1;
+}
+
+.upgrade-card:hover,
+.store-card:hover {
+    border-color: rgba(255, 210, 60, 0.25);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.upgrade-card.owned {
+    border-color: rgba(54, 211, 153, 0.3);
+    background: linear-gradient(135deg, rgba(54, 211, 153, 0.06), var(--bg-card));
+}
+
+.card-icon {
+    font-size: 38px;
+}
+
+.card-name {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.card-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    flex: 1;
+}
+
+.card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+}
+
+.card-price {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--gold);
+}
+
+.card-price .price-icon {
+    font-size: 14px;
+}
+
+.owned-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(54, 211, 153, 0.12);
+    border: 1px solid rgba(54, 211, 153, 0.3);
+    color: var(--green);
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* ============================================================
+   LEADERBOARD
+   ============================================================ */
+
+.leaderboard-container {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.leaderboard-podium {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 32px;
+    padding: 20px;
+}
+
+.podium-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.podium-rank {
+    font-size: 28px;
+}
+
+.podium-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-main);
+    max-width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.podium-coins {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--gold);
+}
+
+.podium-block {
+    width: 80px;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.podium-block.first {
+    height: 100px;
+    background: linear-gradient(180deg, rgba(255, 210, 60, 0.4), rgba(255, 210, 60, 0.1));
+    border: 1px solid rgba(255, 210, 60, 0.5);
+}
+
+.podium-block.second {
+    height: 70px;
+    background: linear-gradient(180deg, rgba(180, 180, 200, 0.3), rgba(180, 180, 200, 0.08));
+    border: 1px solid rgba(180, 180, 200, 0.3);
+}
+
+.podium-block.third {
+    height: 50px;
+    background: linear-gradient(180deg, rgba(200, 140, 60, 0.3), rgba(200, 140, 60, 0.08));
+    border: 1px solid rgba(200, 140, 60, 0.3);
+}
+
+.leaderboard-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.lb-row {
+    display: grid;
+    grid-template-columns: 50px 1fr 1fr 1fr;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: all var(--transition);
+}
+
+.lb-row:hover {
+    border-color: rgba(255, 210, 60, 0.2);
+    transform: translateX(4px);
+}
+
+.lb-row.me {
+    border-color: rgba(255, 210, 60, 0.4);
+    background: linear-gradient(90deg, rgba(255, 210, 60, 0.08), var(--bg-card));
+}
+
+.lb-rank {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.lb-name {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.lb-coins {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--gold);
+}
+
+.lb-hits {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.lb-header {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 4px 18px;
+}
+
+/* ============================================================
+   HISTORY
+   ============================================================ */
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: all var(--transition);
+}
+
+.history-item:hover {
+    border-color: var(--border-glow);
+}
+
+.history-icon {
+    font-size: 24px;
+}
+
+.history-desc {
+    flex: 1;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.history-amount {
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.history-amount.earn {
+    color: var(--green);
+}
+
+.history-amount.spend {
+    color: var(--red);
+}
+
+.history-time {
+    font-size: 12px;
+    color: var(--text-dim);
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+
+.toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    background: var(--bg-card2);
+    border: 1px solid var(--border-glow);
+    color: var(--text-main);
+    padding: 14px 28px;
+    border-radius: 40px;
+    font-size: 15px;
+    font-weight: 600;
+    z-index: 9999;
+    box-shadow: var(--shadow-gold);
+    animation: toast-in 0.3s ease;
+    white-space: nowrap;
+}
+
+@keyframes toast-in {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* ============================================================
+   MODALS
+   ============================================================ */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9990;
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.2s ease;
+}
+
+.modal-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 44px 40px;
+    text-align: center;
+    max-width: 380px;
+    width: 100%;
+    box-shadow: var(--shadow-gold);
+}
+
+.levelup-box {
+    border-color: rgba(155, 93, 229, 0.5);
+    background: linear-gradient(160deg, rgba(155, 93, 229, 0.12), var(--bg-card));
+}
+
+.levelup-effect,
+.lucky-effect {
+    font-size: 64px;
+    display: block;
+    animation: pulse-big 0.6s ease infinite alternate;
+    margin-bottom: 12px;
+}
+
+@keyframes pulse-big {
+    from {
+        transform: scale(1);
+        filter: drop-shadow(0 0 20px rgba(255, 210, 60, 0.4));
+    }
+
+    to {
+        transform: scale(1.15);
+        filter: drop-shadow(0 0 40px rgba(255, 210, 60, 0.8));
+    }
+}
+
+.modal-box h2 {
+    font-size: 30px;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--gold), var(--purple-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+}
+
+.modal-box p {
+    font-size: 17px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+}
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+
+.hidden {
+    display: none !important;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 900px) {
+    .game-area {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-panel {
+        order: -1;
+    }
+
+    .podium-block.first {
+        height: 80px;
+    }
+
+    .podium-block.second {
+        height: 55px;
+    }
+
+    .podium-block.third {
+        height: 40px;
+    }
+}
+
+@media (max-width: 680px) {
+    .navbar {
+        padding: 0 12px;
+        gap: 8px;
+    }
+
+    .nav-logo span:last-child {
+        display: none;
+    }
+
+    .nav-tabs {
+        gap: 2px;
+    }
+
+    .nav-tab span:last-child {
+        display: none;
+    }
+
+    .nav-tab {
+        padding: 8px 10px;
+        font-size: 20px;
+    }
+
+    .coins-banner {
+        gap: 8px;
+    }
+
+    .stat-chip {
+        padding: 7px 12px;
+        font-size: 14px;
+    }
+
+    .auth-container {
+        padding: 32px 24px;
+    }
+
+    .lb-row {
+        grid-template-columns: 40px 1fr 1fr;
+    }
+
+    .lb-hits {
+        display: none;
+    }
+}
+
+@media (max-width: 420px) {
+    .nav-username {
+        display: none;
+    }
+}
+
+/* ============================================================
+   ADS TAB
+   ============================================================ */
+
+.ads-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.ad-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+    transition: all var(--transition);
+}
+
+.ad-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.ad-card.watched {
+    border-color: rgba(54, 211, 153, 0.25);
+    opacity: 0.75;
+}
+
+.ad-card.watched::before {
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+}
+
+.ad-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, .4);
+}
+
+.ad-badge {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gold);
+    background: rgba(255, 210, 60, 0.1);
+    border: 1px solid rgba(255, 210, 60, 0.2);
+    border-radius: 99px;
+    padding: 4px 10px;
+    width: fit-content;
+}
+
+.ad-card.watched .ad-badge {
+    color: var(--green);
+    background: rgba(54, 211, 153, 0.1);
+    border-color: rgba(54, 211, 153, 0.25);
+}
+
+.ad-reward {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--gold);
+}
+
+.ad-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.ad-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    flex: 1;
+}
+
+.ad-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 6px;
+    gap: 10px;
+}
+
+.btn-ad-link {
+    font-size: 13px;
+    color: var(--teal);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn-ad-link:hover {
+    text-decoration: underline;
+}
+
+/* ============================================================
+   WITHDRAW TAB
+   ============================================================ */
+
+.withdraw-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.withdraw-form-card,
+.withdraw-history-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    box-shadow: var(--shadow-card);
+}
+
+.form-select {
+    width: 100%;
+    background: var(--bg-card2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--text-main);
+    outline: none;
+    transition: border-color var(--transition);
+    -webkit-appearance: none;
+}
+
+.form-select:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(255, 210, 60, .12);
+}
+
+.wd-note {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 12px;
+    line-height: 1.5;
+}
+
+/* Withdrawal history rows */
+.wd-row {
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.wd-row-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.wd-amount {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--gold);
+}
+
+.wd-status {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.wd-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.wd-note-text {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-style: italic;
+}
+
+.wd-date {
+    font-size: 11px;
+    color: var(--dim, #474b65);
+}
+
+@media (max-width: 768px) {
+    .withdraw-layout {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
     <!-- Telegram Mini App SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
@@ -337,7 +1982,739 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script>
+/* =====================================================
+   HIT STORE — Main JavaScript Application
+   ===================================================== */
+
+const API = '';  // Same origin (empty = relative)
+let token = localStorage.getItem('hs_token');
+let currentUser = null;
+let energyInterval = null;
+let toastTimeout = null;
+
+// =====================================================
+//  UTILITIES
+// =====================================================
+
+function $(id) { return document.getElementById(id); }
+
+function showToast(msg, duration = 3000) {
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.remove('hidden');
+    if (toastTimeout) clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => t.classList.add('hidden'), duration);
+}
+
+function formatCoins(n) {
+    if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
+    if (n >= 1_000) return (n / 1_000).toFixed(1) + 'K';
+    return n.toLocaleString();
+}
+
+function timeAgo(unixSeconds) {
+    const diff = Math.floor(Date.now() / 1000) - unixSeconds;
+    if (diff < 60) return 'just now';
+    if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+    if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+    return Math.floor(diff / 86400) + 'd ago';
+}
+
+async function apiFetch(path, method = 'GET', body = null) {
+    const opts = {
+        method,
+        headers: { 'Content-Type': 'application/json' }
+    };
+    if (token) opts.headers['Authorization'] = `Bearer ${token}`;
+    if (body) opts.body = JSON.stringify(body);
+    const res = await fetch(API + path, opts);
+    return res.json();
+}
+
+// =====================================================
+//  AUTH — Telegram Mini App (no login form needed)
+// =====================================================
+
+function setLoadingMsg(msg) {
+    const el = $('tg-loading-msg');
+    if (el) el.textContent = msg;
+}
+
+function showApp() {
+    const overlay = $('tg-loading');
+    if (overlay) overlay.classList.add('hidden');
+    $('app').classList.remove('hidden');
+    $('nav-username').textContent = currentUser.username;
+    loadProfile();
+    startEnergyRegen();
+}
+
+function showError(id, msg) {
+    const el = $(id);
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.remove('hidden');
+}
+
+// Logout hides app but just shows loading splash (can't "log out" of Telegram)
+$('logout-btn').addEventListener('click', () => {
+    token = null;
+    currentUser = null;
+    localStorage.removeItem('hs_token');
+    if (energyInterval) clearInterval(energyInterval);
+    // Re-run Telegram auth
+    telegramAutoLogin();
+});
+
+// ─── TELEGRAM AUTO-LOGIN ────────────────────────────────────
+async function telegramAutoLogin() {
+    setLoadingMsg('Connecting to Telegram…');
+
+    // 1️⃣  Try Telegram WebApp
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+        tg.ready();
+        tg.expand();
+        const tgUser = tg.initDataUnsafe?.user;
+        if (tgUser && tgUser.id) {
+            setLoadingMsg(`Welcome, ${tgUser.first_name || tgUser.username}!`);
+            const data = await apiFetch('/api/auth/telegram', 'POST', tgUser);
+            if (!data.error) {
+                token = data.token;
+                localStorage.setItem('hs_token', token);
+                currentUser = { id: data.userId, username: data.username };
+                showApp();
+                return;
+            }
+        }
+    }
+
+    // 2️⃣  Fallback: cached token (user opened in browser)
+    if (token) {
+        setLoadingMsg('Restoring session…');
+        const data = await apiFetch('/api/user/profile');
+        if (!data.error) {
+            currentUser = { id: data.id, username: data.username };
+            showApp();
+            return;
+        }
+        localStorage.removeItem('hs_token');
+        token = null;
+    }
+
+    // 3️⃣  Dev / browser fallback — auto-create a guest account
+    setLoadingMsg('Creating guest session…');
+    const guestId = localStorage.getItem('hs_guest_id') || ('guest_' + Math.random().toString(36).slice(2, 10));
+    localStorage.setItem('hs_guest_id', guestId);
+    const guestUser = { id: guestId, first_name: 'Guest', username: guestId };
+    const data = await apiFetch('/api/auth/telegram', 'POST', guestUser);
+    if (!data.error) {
+        token = data.token;
+        localStorage.setItem('hs_token', token);
+        currentUser = { id: data.userId, username: data.username };
+        showApp();
+    } else {
+        setLoadingMsg('⚠️ Could not connect. Please retry.');
+    }
+}
+
+// Start auth immediately on page load
+telegramAutoLogin();
+
+// =====================================================
+//  NAVIGATION TABS
+// =====================================================
+
+document.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        const tabId = tab.dataset.tab;
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        $(`tab-content-${tabId}`).classList.add('active');
+
+        // Load data for the active tab
+        if (tabId === 'upgrades') loadUpgrades();
+        if (tabId === 'store') loadStore();
+        if (tabId === 'leaderboard') loadLeaderboard();
+        if (tabId === 'history') loadHistory();
+        if (tabId === 'ads') loadAds();
+        if (tabId === 'withdraw') loadWithdrawals();
+    });
+});
+
+// =====================================================
+//  PROFILE & STATS
+// =====================================================
+
+let profileData = null;
+
+async function loadProfile() {
+    const data = await apiFetch('/api/user/profile');
+    if (data.error) return;
+    profileData = data;
+    updateStatsUI(data);
+}
+
+function updateStatsUI(data) {
+    $('stat-coins').textContent = formatCoins(data.coins);
+    $('stat-level').textContent = data.level;
+    $('stat-hits').textContent = formatCoins(data.total_hits);
+    $('stat-energy').textContent = data.energy;
+    $('stat-max-energy').textContent = data.max_energy;
+    $('total-hits-display').textContent = formatCoins(data.total_hits);
+    $('hammer-level-display').textContent = data.hammer_level;
+
+    // Coins per hit estimate
+    const ownedUpgrades = data.ownedUpgrades || [];
+    const damageUpgrades = [2, 3, 5, 10]; // Upgrade values
+    const upgradeIds = [1, 2, 3, 4];
+    let damageMulti = 1;
+    upgradeIds.forEach((id, i) => {
+        if (ownedUpgrades.includes(id)) damageMulti = Math.max(damageMulti, damageUpgrades[i]);
+    });
+    $('coins-per-hit').textContent = data.hammer_level * damageMulti;
+
+    // XP bar
+    const xpPct = Math.min((data.xp / data.xpNeeded) * 100, 100);
+    $('xp-bar').style.width = xpPct + '%';
+    $('xp-text').textContent = `XP: ${formatCoins(data.xp)} / ${formatCoins(data.xpNeeded)}`;
+
+    // Energy bar
+    const energyPct = (data.energy / data.max_energy) * 100;
+    $('energy-bar').style.width = energyPct + '%';
+    $('energy-val').textContent = `${data.energy} / ${data.max_energy}`;
+
+    // Milestones
+    renderMilestones(data.total_hits, data.coins);
+
+    // Restore stone crack state on load
+    updateStoneCracks(data.total_hits);
+}
+
+function renderMilestones(hits, coins) {
+    const milestones = [
+        { icon: '🥉', text: 'First 10 Hits', achieved: hits >= 10, reward: '+10 XP' },
+        { icon: '🥈', text: '100 Hits Club', achieved: hits >= 100, reward: '+50 XP' },
+        { icon: '🥇', text: '1,000 Hit Legend', achieved: hits >= 1000, reward: '+200 XP' },
+        { icon: '💰', text: 'Earn 1K Coins', achieved: coins >= 1000, reward: 'Rich!' },
+        { icon: '💎', text: 'Earn 100K Coins', achieved: coins >= 100000, reward: 'Legend' },
+    ];
+
+    $('milestones-list').innerHTML = milestones.map(m => `
+    <div class="milestone-item ${m.achieved ? 'achieved' : ''}">
+      <span class="ms-icon">${m.icon}</span>
+      <span class="ms-text">${m.text}</span>
+      ${m.achieved ? `<span class="milestone-badge">✓ ${m.reward}</span>` : ''}
+    </div>
+  `).join('');
+}
+
+// =====================================================
+//  ENERGY REGENERATION (CLIENT-SIDE DISPLAY)
+// =====================================================
+
+function startEnergyRegen() {
+    if (energyInterval) clearInterval(energyInterval);
+    energyInterval = setInterval(() => {
+        if (!profileData) return;
+        if (profileData.energy < profileData.max_energy) {
+            profileData.energy = Math.min(profileData.energy + 1, profileData.max_energy);
+            $('stat-energy').textContent = profileData.energy;
+            $('energy-val').textContent = `${profileData.energy} / ${profileData.max_energy}`;
+            const pct = (profileData.energy / profileData.max_energy) * 100;
+            $('energy-bar').style.width = pct + '%';
+        }
+    }, 1000);
+}
+
+// =====================================================
+//  HIT THE STORE (GAME)
+// =====================================================
+
+let isHitting = false;
+
+async function hitStore() {
+    if (isHitting) return;
+    if (!profileData) return;
+
+    if (profileData.energy < 1) {
+        showToast('⚡ Not enough energy! Wait for regen or buy a refill.', 3000);
+        return;
+    }
+
+    isHitting = true;
+
+    // Stone shake animation
+    const stoneWrap = $('store-building');
+    stoneWrap.classList.add('hit-anim');
+    stoneWrap.addEventListener('animationend', () => stoneWrap.classList.remove('hit-anim'), { once: true });
+
+    // Spawn floating coins
+    spawnFloatingCoin();
+
+    const data = await apiFetch('/api/game/hit', 'POST');
+    isHitting = false;
+
+    if (data.error) { showToast('❌ ' + data.error, 2500); return; }
+
+    // Update local state
+    profileData.coins = data.newCoins;
+    profileData.energy = data.newEnergy;
+    profileData.xp = data.newXp;
+    profileData.level = data.newLevel;
+    profileData.total_hits = data.totalHits;
+    profileData.xpNeeded = data.xpNeeded;
+
+    // Show hit feedback text
+    showHitFeedback(`+${data.coinsEarned}🪙${data.luckyExtra > 0 ? ' 🍀' : ''}`);
+
+    // Update UI stats
+    $('stat-coins').textContent = formatCoins(data.newCoins);
+    $('stat-energy').textContent = data.newEnergy;
+    $('stat-hits').textContent = formatCoins(data.totalHits);
+    $('stat-level').textContent = data.newLevel;
+    $('total-hits-display').textContent = formatCoins(data.totalHits);
+
+    const xpPct = Math.min((data.newXp / data.xpNeeded) * 100, 100);
+    $('xp-bar').style.width = xpPct + '%';
+    $('xp-text').textContent = `XP: ${formatCoins(data.newXp)} / ${formatCoins(data.xpNeeded)}`;
+
+    const energyPct = (data.newEnergy / profileData.max_energy) * 100;
+    $('energy-bar').style.width = energyPct + '%';
+    $('energy-val').textContent = `${data.newEnergy} / ${profileData.max_energy}`;
+
+    renderMilestones(data.totalHits, data.newCoins);
+
+    // 🪨 Update stone crack visuals
+    updateStoneCracks(data.totalHits);
+
+    // Level up?
+    if (data.leveledUp) {
+        $('levelup-text').textContent = `You reached Level ${data.newLevel}! 🎉`;
+        $('levelup-modal').classList.remove('hidden');
+    }
+}
+
+
+$('hit-btn').addEventListener('click', hitStore);
+$('store-building').addEventListener('click', hitStore);
+
+document.addEventListener('keydown', e => {
+    if (e.code === 'Space' && $('tab-content-game').classList.contains('active')) {
+        e.preventDefault();
+        hitStore();
+    }
+});
+
+$('levelup-close').addEventListener('click', () => $('levelup-modal').classList.add('hidden'));
+$('lucky-close').addEventListener('click', () => $('lucky-modal').classList.add('hidden'));
+
+// Floating coin animation
+function spawnFloatingCoin() {
+    const coin = document.createElement('div');
+    coin.textContent = '🪙';
+    coin.style.cssText = `
+    position: fixed;
+    font-size: ${18 + Math.random() * 16}px;
+    left: ${Math.random() * 100}vw;
+    top: 60vh;
+    pointer-events: none;
+    z-index: 8000;
+    animation: coinFloat 1.4s ease forwards;
+    opacity: 0.9;
+  `;
+    document.body.appendChild(coin);
+    setTimeout(() => coin.remove(), 1500);
+}
+
+// Inject coin float keyframe
+const styleEl = document.createElement('style');
+styleEl.textContent = `
+  @keyframes coinFloat {
+    0%   { transform: translateY(0) scale(1) rotate(0deg); opacity: 0.9; }
+    100% { transform: translateY(-220px) scale(0.5) rotate(${Math.random() > 0.5 ? 180 : -180}deg); opacity: 0; }
+  }
+`;
+document.head.appendChild(styleEl);
+
+function showHitFeedback(text) {
+    const fb = $('hit-feedback');
+    $('hit-coins-text').textContent = text;
+    fb.classList.remove('hidden');
+    fb.style.animation = 'none';
+    fb.offsetHeight; // reflow
+    fb.style.animation = '';
+    fb.classList.remove('hidden');
+    setTimeout(() => fb.classList.add('hidden'), 1300);
+}
+
+// =====================================================
+//  STONE CRACK SYSTEM
+// =====================================================
+
+// Crack thresholds for each SVG layer
+const CRACK_THRESHOLDS = [
+    { id: 'crack-1', at: 20 },
+    { id: 'crack-2', at: 50 },
+    { id: 'crack-3', at: 100 },
+    { id: 'crack-4', at: 500 },
+];
+
+// Max hits considered for the durability bar (resets after shattering)
+const DURABILITY_CYCLE = 500;
+
+function updateStoneCracks(totalHits) {
+    // Show crack SVG layers progressively
+    CRACK_THRESHOLDS.forEach(c => {
+        const el = document.getElementById(c.id);
+        if (!el) return;
+        if (totalHits >= c.at) {
+            el.classList.add('visible');
+            el.style.display = '';
+        }
+    });
+
+    // Darken stone body as cracks accumulate
+    const stoneBody = document.getElementById('stone-body');
+    if (stoneBody) {
+        stoneBody.classList.remove('cracked-1', 'cracked-2', 'cracked-3', 'cracked-4');
+        if (totalHits >= 500) stoneBody.classList.add('cracked-4');
+        else if (totalHits >= 100) stoneBody.classList.add('cracked-3');
+        else if (totalHits >= 50) stoneBody.classList.add('cracked-2');
+        else if (totalHits >= 20) stoneBody.classList.add('cracked-1');
+    }
+
+    // Update crack health bar
+    const hitsInCycle = totalHits % DURABILITY_CYCLE || (totalHits >= DURABILITY_CYCLE ? DURABILITY_CYCLE : totalHits);
+    const durabilityPct = Math.max(0, 100 - (hitsInCycle / DURABILITY_CYCLE) * 100);
+    const bar = document.getElementById('crack-bar');
+    const pctText = document.getElementById('crack-pct-text');
+    if (bar) {
+        bar.style.width = durabilityPct + '%';
+        bar.classList.remove('dmg-25', 'dmg-50', 'dmg-75', 'dmg-critical');
+        if (durabilityPct <= 10) bar.classList.add('dmg-critical');
+        else if (durabilityPct <= 25) bar.classList.add('dmg-75');
+        else if (durabilityPct <= 50) bar.classList.add('dmg-50');
+        else if (durabilityPct <= 75) bar.classList.add('dmg-25');
+    }
+    if (pctText) pctText.textContent = Math.round(durabilityPct) + '%';
+
+    // Spawn dust particles inside the SVG on each hit
+    spawnStoneDust();
+}
+
+function spawnStoneDust() {
+    const dustGroup = document.getElementById('stone-dust');
+    if (!dustGroup) return;
+    for (let i = 0; i < 5; i++) {
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        const x = 80 + Math.random() * 140;
+        const y = 60 + Math.random() * 140;
+        const r = 1.5 + Math.random() * 3;
+        circle.setAttribute('cx', x);
+        circle.setAttribute('cy', y);
+        circle.setAttribute('r', r);
+        circle.setAttribute('fill', `rgba(180,160,140,${0.5 + Math.random() * 0.4})`);
+        circle.style.animation = `dustFade 0.7s ease forwards`;
+        dustGroup.appendChild(circle);
+        setTimeout(() => circle.remove(), 750);
+    }
+}
+
+// Inject dust fade keyframe
+const dustStyle = document.createElement('style');
+dustStyle.textContent = `
+  @keyframes dustFade {
+    0%   { opacity: 1; transform: translate(0, 0) scale(1); }
+    100% { opacity: 0; transform: translate(${Math.random() > 0.5 ? '' : '-'}${5 + Math.random() * 15}px, -${10 + Math.random() * 20}px) scale(0.3); }
+  }
+`;
+document.head.appendChild(dustStyle);
+
+
+// =====================================================
+//  UPGRADES
+// =====================================================
+
+async function loadUpgrades() {
+    const upgrades = await apiFetch('/api/upgrades');
+    if (!Array.isArray(upgrades)) return;
+    const userData = await apiFetch('/api/user/profile');
+
+    $('upgrades-grid').innerHTML = upgrades.map(u => `
+    <div class="upgrade-card ${u.owned ? 'owned' : ''}" id="upg-card-${u.id}">
+      <div class="card-icon">${u.icon}</div>
+      <div class="card-name">${u.name}</div>
+      <div class="card-desc">${u.description}</div>
+      <div class="card-footer">
+        <div class="card-price"><span class="price-icon">🪙</span> ${formatCoins(u.cost)}</div>
+        ${u.owned
+            ? `<div class="owned-badge">✓ Owned</div>`
+            : `<button class="btn btn-primary btn-sm" id="buy-upg-${u.id}"
+               onclick="buyUpgrade(${u.id}, ${u.cost})"
+               ${userData.coins < u.cost ? 'disabled title="Not enough coins"' : ''}>
+               Buy
+             </button>`
+        }
+      </div>
+    </div>
+  `).join('');
+}
+
+window.buyUpgrade = async function (id, cost) {
+    const btn = $(`buy-upg-${id}`);
+    if (btn) { btn.textContent = 'Buying…'; btn.disabled = true; }
+
+    const data = await apiFetch(`/api/upgrades/buy/${id}`, 'POST');
+    if (data.error) {
+        showToast('❌ ' + data.error, 2500);
+        if (btn) { btn.textContent = 'Buy'; btn.disabled = false; }
+        return;
+    }
+    showToast('✅ Upgrade purchased!', 2500);
+    if (profileData) {
+        profileData.coins = data.newCoins;
+        $('stat-coins').textContent = formatCoins(data.newCoins);
+    }
+    loadUpgrades();
+    loadProfile();
+};
+
+// =====================================================
+//  STORE
+// =====================================================
+
+async function loadStore() {
+    const items = await apiFetch('/api/store');
+    if (!Array.isArray(items)) return;
+    const userData = await apiFetch('/api/user/profile');
+
+    $('store-grid').innerHTML = items.map(item => `
+    <div class="store-card">
+      <div class="card-icon">${item.icon}</div>
+      <div class="card-name">${item.name}</div>
+      <div class="card-desc">${item.description}</div>
+      <div class="card-footer">
+        <div class="card-price"><span class="price-icon">🪙</span> ${formatCoins(item.price)}</div>
+        <button class="btn btn-primary btn-sm" id="buy-store-${item.id}"
+          onclick="buyStoreItem(${item.id})"
+          ${userData.coins < item.price ? 'disabled title="Not enough coins"' : ''}>
+          Buy
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.buyStoreItem = async function (id) {
+    const btn = $(`buy-store-${id}`);
+    if (btn) { btn.textContent = 'Buying…'; btn.disabled = true; }
+
+    const data = await apiFetch(`/api/store/buy/${id}`, 'POST');
+    if (data.error) {
+        showToast('❌ ' + data.error, 2500);
+        if (btn) { btn.textContent = 'Buy'; btn.disabled = false; }
+        return;
+    }
+
+    showToast('✅ ' + data.message, 3000);
+
+    if (profileData) {
+        profileData.coins = data.newCoins;
+        $('stat-coins').textContent = formatCoins(data.newCoins);
+    }
+
+    // Lucky box reveal
+    if (data.luckyWin) {
+        $('lucky-text').textContent = `You won ${formatCoins(data.luckyWin)} coins! 🎉`;
+        $('lucky-modal').classList.remove('hidden');
+    }
+
+    loadProfile();
+    loadStore();
+};
+
+// =====================================================
+//  LEADERBOARD
+// =====================================================
+
+async function loadLeaderboard() {
+    const data = await apiFetch('/api/leaderboard');
+    if (!Array.isArray(data)) return;
+
+    // Podium (top 3)
+    const podiumEmojis = ['🥇', '🥈', '🥉'];
+    const podiumClasses = ['first', 'second', 'third'];
+    const podiumOrder = [1, 0, 2]; // show 2nd, 1st, 3rd visually
+    const top3 = data.slice(0, 3);
+
+    $('leaderboard-podium').innerHTML = podiumOrder.map(idx => {
+        const entry = top3[idx];
+        if (!entry) return '<div class="podium-slot"></div>';
+        return `
+      <div class="podium-slot">
+        <div class="podium-rank">${podiumEmojis[idx]}</div>
+        <div class="podium-name">${entry.username}</div>
+        <div class="podium-coins">🪙 ${formatCoins(entry.coins)}</div>
+        <div class="podium-block ${podiumClasses[idx]}">${idx === 0 ? '🏆' : idx === 1 ? '🥈' : '🥉'}</div>
+      </div>
+    `;
+    }).join('');
+
+    // Table list (all)
+    $('leaderboard-list').innerHTML = `
+    <div class="lb-row lb-header">
+      <div>#</div><div>Player</div><div>Coins</div><div>Hits</div>
+    </div>
+    ${data.map((entry, i) => `
+      <div class="lb-row ${currentUser && entry.username === currentUser.username ? 'me' : ''}">
+        <div class="lb-rank">${i < 3 ? podiumEmojis[i] : '#' + (i + 1)}</div>
+        <div class="lb-name">${entry.username} ${entry.username === currentUser?.username ? '(You)' : ''}</div>
+        <div class="lb-coins">🪙 ${formatCoins(entry.coins)}</div>
+        <div class="lb-hits">⚒️ ${formatCoins(entry.total_hits)}</div>
+      </div>
+    `).join('')}
+  `;
+}
+
+// =====================================================
+//  TRANSACTION HISTORY
+// =====================================================
+
+async function loadHistory() {
+    const data = await apiFetch('/api/transactions');
+    if (!Array.isArray(data)) return;
+
+    if (data.length === 0) {
+        $('history-list').innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:40px">No transactions yet. Go hit the store! ⚒️</p>';
+        return;
+    }
+
+    const icons = { earn: '✅', spend: '💸' };
+
+    $('history-list').innerHTML = data.map(tx => `
+    <div class="history-item">
+      <span class="history-icon">${icons[tx.type] || '💱'}</span>
+      <span class="history-desc">${tx.description}</span>
+      <span class="history-amount ${tx.type}">${tx.type === 'earn' ? '+' : '-'}${formatCoins(tx.amount)} 🪙</span>
+      <span class="history-time">${timeAgo(tx.created_at)}</span>
+    </div>
+  `).join('');
+}
+
+// =====================================================
+//  ADS
+// =====================================================
+
+async function loadAds() {
+    const ads = await apiFetch('/api/ads');
+    if (!Array.isArray(ads)) return;
+    const grid = $('ads-grid');
+    if (!ads.length) {
+        grid.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:40px">No ads available. Check back later!</p>';
+        return;
+    }
+    grid.innerHTML = ads.map(ad => `
+      <div class="ad-card ${ad.watchedToday ? 'watched' : ''}" id="ad-card-${ad.id}">
+        <div class="ad-badge">${ad.watchedToday ? '✅ Watched Today' : '📺 Available'}</div>
+        <div class="ad-reward">🪙 +${ad.coin_reward} coins</div>
+        <div class="ad-title">${ad.title}</div>
+        <div class="ad-desc">${ad.description}</div>
+        <div class="ad-footer">
+          ${ad.link_url ? `<a href="${ad.link_url}" target="_blank" class="btn-ad-link" onclick="trackAdClick(${ad.id})">🔗 Visit</a>` : ''}
+          <button class="btn btn-primary btn-sm" id="watch-${ad.id}"
+            onclick="watchAd(${ad.id})"
+            ${ad.watchedToday ? 'disabled title="Already watched today"' : ''}>
+            ${ad.watchedToday ? '✅ Done' : '▶ Watch & Earn'}
+          </button>
+        </div>
+      </div>
+    `).join('');
+}
+
+async function watchAd(id) {
+    const btn = $(`watch-${id}`);
+    if (btn) { btn.textContent = 'Watching…'; btn.disabled = true; }
+    // Simulate 3-second ad watch
+    await new Promise(r => setTimeout(r, 3000));
+    const data = await apiFetch(`/api/ads/watch/${id}`, 'POST');
+    if (data.error) {
+        showToast('❌ ' + data.error, 2500);
+        if (btn) { btn.textContent = '▶ Watch & Earn'; btn.disabled = false; }
+        return;
+    }
+    showToast(`🎉 +${data.reward} coins earned from ad!`, 3000);
+    if (profileData) {
+        profileData.coins = data.newCoins;
+        $('stat-coins').textContent = formatCoins(data.newCoins);
+    }
+    // Update card to watched state
+    const card = $(`ad-card-${id}`);
+    if (card) {
+        card.classList.add('watched');
+        card.querySelector('.ad-badge').textContent = '✅ Watched Today';
+        if (btn) { btn.textContent = '✅ Done'; btn.disabled = true; }
+    }
+}
+
+window.trackAdClick = async function (id) {
+    await apiFetch(`/api/ads/click/${id}`, 'POST');
+};
+
+// =====================================================
+//  WITHDRAWALS
+// =====================================================
+
+async function loadWithdrawals() {
+    const data = await apiFetch('/api/withdraw/my');
+    const div = $('my-withdrawals');
+    if (!Array.isArray(data) || !data.length) {
+        div.innerHTML = '<p style="color:var(--text-muted);font-size:14px;padding:20px 0">No withdrawal requests yet.</p>';
+        return;
+    }
+    const statusColors = { pending: '#ffd23c', approved: '#36d399', rejected: '#ff4d6d' };
+    const statusIcons = { pending: '⏳', approved: '✅', rejected: '❌' };
+    div.innerHTML = data.map(w => `
+      <div class="wd-row">
+        <div class="wd-row-top">
+          <span class="wd-amount">🪙 ${formatCoins(w.amount)}</span>
+          <span class="wd-status" style="color:${statusColors[w.status]}">${statusIcons[w.status]} ${w.status}</span>
+        </div>
+        <div class="wd-meta">${w.method} · ${w.account_info}</div>
+        ${w.admin_note ? `<div class="wd-note-text">📝 ${w.admin_note}</div>` : ''}
+        <div class="wd-date">${timeAgo(w.created_at)}</div>
+      </div>
+    `).join('');
+}
+
+$('wd-submit').addEventListener('click', async () => {
+    const amount = parseInt($('wd-amount').value);
+    const method = $('wd-method').value;
+    const account = $('wd-account').value.trim();
+    const errEl = $('wd-error');
+    errEl.classList.add('hidden');
+    if (!amount || amount < 1000) { errEl.textContent = 'Minimum withdrawal is 1,000 coins'; errEl.classList.remove('hidden'); return; }
+    if (!account) { errEl.textContent = 'Please enter your account/UPI details'; errEl.classList.remove('hidden'); return; }
+
+    const btn = $('wd-submit');
+    btn.textContent = 'Submitting…'; btn.disabled = true;
+    const data = await apiFetch('/api/withdraw/request', 'POST', { amount, method, accountInfo: account });
+    btn.textContent = '💸 Submit Request'; btn.disabled = false;
+
+    if (data.error) { errEl.textContent = '❌ ' + data.error; errEl.classList.remove('hidden'); return; }
+    showToast(`✅ Withdrawal request for 🪙 ${formatCoins(amount)} submitted!`, 4000);
+    $('wd-amount').value = '';
+    $('wd-account').value = '';
+    if (profileData) {
+        profileData.coins = data.newCoins;
+        $('stat-coins').textContent = formatCoins(data.newCoins);
+    }
+    loadWithdrawals();
+});
+
+</script>
 </body>
 
 </html>
