@@ -164,6 +164,8 @@ document.querySelectorAll('.nav-tab').forEach(tab => {
         if (tabId === 'store') loadStore();
         if (tabId === 'leaderboard') loadLeaderboard();
         if (tabId === 'history') loadHistory();
+        if (tabId === 'ads') loadAds();
+        if (tabId === 'withdraw') loadWithdrawals();
     });
 });
 
@@ -626,3 +628,113 @@ async function loadHistory() {
     </div>
   `).join('');
 }
+
+// =====================================================
+//  ADS
+// =====================================================
+
+async function loadAds() {
+    const ads = await apiFetch('/api/ads');
+    if (!Array.isArray(ads)) return;
+    const grid = $('ads-grid');
+    if (!ads.length) {
+        grid.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:40px">No ads available. Check back later!</p>';
+        return;
+    }
+    grid.innerHTML = ads.map(ad => `
+      <div class="ad-card ${ad.watchedToday ? 'watched' : ''}" id="ad-card-${ad.id}">
+        <div class="ad-badge">${ad.watchedToday ? '✅ Watched Today' : '📺 Available'}</div>
+        <div class="ad-reward">🪙 +${ad.coin_reward} coins</div>
+        <div class="ad-title">${ad.title}</div>
+        <div class="ad-desc">${ad.description}</div>
+        <div class="ad-footer">
+          ${ad.link_url ? `<a href="${ad.link_url}" target="_blank" class="btn-ad-link" onclick="trackAdClick(${ad.id})">🔗 Visit</a>` : ''}
+          <button class="btn btn-primary btn-sm" id="watch-${ad.id}"
+            onclick="watchAd(${ad.id})"
+            ${ad.watchedToday ? 'disabled title="Already watched today"' : ''}>
+            ${ad.watchedToday ? '✅ Done' : '▶ Watch & Earn'}
+          </button>
+        </div>
+      </div>
+    `).join('');
+}
+
+async function watchAd(id) {
+    const btn = $(`watch-${id}`);
+    if (btn) { btn.textContent = 'Watching…'; btn.disabled = true; }
+    // Simulate 3-second ad watch
+    await new Promise(r => setTimeout(r, 3000));
+    const data = await apiFetch(`/api/ads/watch/${id}`, 'POST');
+    if (data.error) {
+        showToast('❌ ' + data.error, 2500);
+        if (btn) { btn.textContent = '▶ Watch & Earn'; btn.disabled = false; }
+        return;
+    }
+    showToast(`🎉 +${data.reward} coins earned from ad!`, 3000);
+    if (profileData) {
+        profileData.coins = data.newCoins;
+        $('stat-coins').textContent = formatCoins(data.newCoins);
+    }
+    // Update card to watched state
+    const card = $(`ad-card-${id}`);
+    if (card) {
+        card.classList.add('watched');
+        card.querySelector('.ad-badge').textContent = '✅ Watched Today';
+        if (btn) { btn.textContent = '✅ Done'; btn.disabled = true; }
+    }
+}
+
+window.trackAdClick = async function (id) {
+    await apiFetch(`/api/ads/click/${id}`, 'POST');
+};
+
+// =====================================================
+//  WITHDRAWALS
+// =====================================================
+
+async function loadWithdrawals() {
+    const data = await apiFetch('/api/withdraw/my');
+    const div = $('my-withdrawals');
+    if (!Array.isArray(data) || !data.length) {
+        div.innerHTML = '<p style="color:var(--text-muted);font-size:14px;padding:20px 0">No withdrawal requests yet.</p>';
+        return;
+    }
+    const statusColors = { pending: '#ffd23c', approved: '#36d399', rejected: '#ff4d6d' };
+    const statusIcons = { pending: '⏳', approved: '✅', rejected: '❌' };
+    div.innerHTML = data.map(w => `
+      <div class="wd-row">
+        <div class="wd-row-top">
+          <span class="wd-amount">🪙 ${formatCoins(w.amount)}</span>
+          <span class="wd-status" style="color:${statusColors[w.status]}">${statusIcons[w.status]} ${w.status}</span>
+        </div>
+        <div class="wd-meta">${w.method} · ${w.account_info}</div>
+        ${w.admin_note ? `<div class="wd-note-text">📝 ${w.admin_note}</div>` : ''}
+        <div class="wd-date">${timeAgo(w.created_at)}</div>
+      </div>
+    `).join('');
+}
+
+$('wd-submit').addEventListener('click', async () => {
+    const amount = parseInt($('wd-amount').value);
+    const method = $('wd-method').value;
+    const account = $('wd-account').value.trim();
+    const errEl = $('wd-error');
+    errEl.classList.add('hidden');
+    if (!amount || amount < 1000) { errEl.textContent = 'Minimum withdrawal is 1,000 coins'; errEl.classList.remove('hidden'); return; }
+    if (!account) { errEl.textContent = 'Please enter your account/UPI details'; errEl.classList.remove('hidden'); return; }
+
+    const btn = $('wd-submit');
+    btn.textContent = 'Submitting…'; btn.disabled = true;
+    const data = await apiFetch('/api/withdraw/request', 'POST', { amount, method, accountInfo: account });
+    btn.textContent = '💸 Submit Request'; btn.disabled = false;
+
+    if (data.error) { errEl.textContent = '❌ ' + data.error; errEl.classList.remove('hidden'); return; }
+    showToast(`✅ Withdrawal request for 🪙 ${formatCoins(amount)} submitted!`, 4000);
+    $('wd-amount').value = '';
+    $('wd-account').value = '';
+    if (profileData) {
+        profileData.coins = data.newCoins;
+        $('stat-coins').textContent = formatCoins(data.newCoins);
+    }
+    loadWithdrawals();
+});

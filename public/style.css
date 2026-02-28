@@ -1360,16 +1360,212 @@ body {
 }
 
 @media (max-width: 420px) {
-    .nav-tab {
-        font-size: 18px;
-        padding: 8px 8px;
-    }
-
-    .nav-user {
-        min-width: unset;
-    }
-
     .nav-username {
         display: none;
+    }
+}
+
+/* ============================================================
+   ADS TAB
+   ============================================================ */
+
+.ads-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.ad-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+    transition: all var(--transition);
+}
+
+.ad-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.ad-card.watched {
+    border-color: rgba(54, 211, 153, 0.25);
+    opacity: 0.75;
+}
+
+.ad-card.watched::before {
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+}
+
+.ad-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, .4);
+}
+
+.ad-badge {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gold);
+    background: rgba(255, 210, 60, 0.1);
+    border: 1px solid rgba(255, 210, 60, 0.2);
+    border-radius: 99px;
+    padding: 4px 10px;
+    width: fit-content;
+}
+
+.ad-card.watched .ad-badge {
+    color: var(--green);
+    background: rgba(54, 211, 153, 0.1);
+    border-color: rgba(54, 211, 153, 0.25);
+}
+
+.ad-reward {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--gold);
+}
+
+.ad-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.ad-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    flex: 1;
+}
+
+.ad-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 6px;
+    gap: 10px;
+}
+
+.btn-ad-link {
+    font-size: 13px;
+    color: var(--teal);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn-ad-link:hover {
+    text-decoration: underline;
+}
+
+/* ============================================================
+   WITHDRAW TAB
+   ============================================================ */
+
+.withdraw-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.withdraw-form-card,
+.withdraw-history-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    box-shadow: var(--shadow-card);
+}
+
+.form-select {
+    width: 100%;
+    background: var(--bg-card2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--text-main);
+    outline: none;
+    transition: border-color var(--transition);
+    -webkit-appearance: none;
+}
+
+.form-select:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(255, 210, 60, .12);
+}
+
+.wd-note {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 12px;
+    line-height: 1.5;
+}
+
+/* Withdrawal history rows */
+.wd-row {
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.wd-row-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.wd-amount {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--gold);
+}
+
+.wd-status {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.wd-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.wd-note-text {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-style: italic;
+}
+
+.wd-date {
+    font-size: 11px;
+    color: var(--dim, #474b65);
+}
+
+@media (max-width: 768px) {
+    .withdraw-layout {
+        grid-template-columns: 1fr;
     }
 }
