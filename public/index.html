@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hit Store – Win Coins! 🏆</title>
+  <meta name="description" content="Hit the store, win coins, upgrade your hammer and dominate the leaderboard in this epic clicker game!" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ========== AUTH OVERLAY ========== -->
+  <div id="auth-overlay" class="auth-overlay">
+    <div class="auth-container">
+      <div class="auth-logo">
+        <span class="logo-icon">🏪</span>
+        <h1 class="logo-title">HIT STORE</h1>
+        <p class="logo-sub">Hit the Store · Win Coins · Rule the Board</p>
+      </div>
+
+      <!-- Login Form -->
+      <div id="login-form" class="auth-form active">
+        <h2>Welcome Back</h2>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="login-email" placeholder="your@email.com" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" />
+        </div>
+        <div id="login-error" class="form-error hidden"></div>
+        <button id="login-btn" class="btn btn-primary btn-full">Login &amp; Play</button>
+        <p class="auth-switch">No account? <span id="go-register">Sign Up</span></p>
+      </div>
+
+      <!-- Register Form -->
+      <div id="register-form" class="auth-form">
+        <h2>Create Account</h2>
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="reg-username" placeholder="CoinHunter99" />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="reg-email" placeholder="your@email.com" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="reg-password" placeholder="Min 6 characters" />
+        </div>
+        <div id="reg-error" class="form-error hidden"></div>
+        <button id="register-btn" class="btn btn-primary btn-full">Create & Play</button>
+        <p class="auth-switch">Have an account? <span id="go-login">Login</span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MAIN APP ========== -->
+  <div id="app" class="app hidden">
+
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="nav-logo">
+        <span>🏪</span>
+        <span>HIT STORE</span>
+      </div>
+      <div class="nav-tabs">
+        <button class="nav-tab active" data-tab="game" id="tab-game">
+          <span>⚒️</span> Game
+        </button>
+        <button class="nav-tab" data-tab="upgrades" id="tab-upgrades">
+          <span>🔧</span> Upgrades
+        </button>
+        <button class="nav-tab" data-tab="store" id="tab-store">
+          <span>🛒</span> Store
+        </button>
+        <button class="nav-tab" data-tab="leaderboard" id="tab-leaderboard">
+          <span>🏆</span> Ranks
+        </button>
+        <button class="nav-tab" data-tab="history" id="tab-history">
+          <span>📜</span> History
+        </button>
+      </div>
+      <div class="nav-user">
+        <span id="nav-username" class="nav-username"></span>
+        <button id="logout-btn" class="btn btn-sm btn-ghost">Logout</button>
+      </div>
+    </nav>
+
+    <!-- Coins Banner -->
+    <div class="coins-banner">
+      <div class="stat-chip">
+        <span>🪙</span>
+        <span id="stat-coins">0</span>
+        <span class="stat-label">Coins</span>
+      </div>
+      <div class="stat-chip">
+        <span>⭐</span>
+        <span id="stat-level">1</span>
+        <span class="stat-label">Level</span>
+      </div>
+      <div class="stat-chip">
+        <span>🔨</span>
+        <span id="stat-hits">0</span>
+        <span class="stat-label">Total Hits</span>
+      </div>
+      <div class="stat-chip energy-chip">
+        <span>⚡</span>
+        <span id="stat-energy">100</span>/<span id="stat-max-energy">100</span>
+        <span class="stat-label">Energy</span>
+      </div>
+    </div>
+
+    <!-- XP Bar -->
+    <div class="xp-bar-wrap">
+      <div class="xp-bar-track">
+        <div id="xp-bar" class="xp-bar-fill" style="width:0%"></div>
+      </div>
+      <span id="xp-text" class="xp-text">XP: 0 / 100</span>
+    </div>
+
+    <!-- ========== GAME TAB ========== -->
+    <section id="tab-content-game" class="tab-content active">
+      <div class="game-area">
+        <!-- Store Building -->
+        <div class="store-container">
+          <div id="hit-feedback" class="hit-feedback hidden">
+            <span id="hit-coins-text"></span>
+          </div>
+          <div id="store-building" class="store-building" title="Hit the Store!">
+            <div class="store-sign">🏪 STORE</div>
+            <div class="store-body">
+              <div class="store-window">🪟</div>
+              <div class="store-window">🪟</div>
+              <div class="store-door">🚪</div>
+            </div>
+            <div class="store-cracks" id="store-cracks"></div>
+          </div>
+          <button id="hit-btn" class="hit-button" aria-label="Hit the Store">
+            <span class="hit-btn-icon">⚒️</span>
+            <span class="hit-btn-text">HIT!</span>
+          </button>
+          <p class="hit-hint">Click the store or press <kbd>Space</kbd> to hit!</p>
+        </div>
+
+        <!-- Stats Panel -->
+        <div class="stats-panel">
+          <h3 class="panel-title">⚡ Live Stats</h3>
+          <div class="stat-row">
+            <span>💰 Coins per hit</span>
+            <strong id="coins-per-hit">1</strong>
+          </div>
+          <div class="stat-row">
+            <span>🔋 Energy Regen</span>
+            <strong>1/sec</strong>
+          </div>
+          <div class="stat-row">
+            <span>🔨 Hammer Level</span>
+            <strong id="hammer-level-display">1</strong>
+          </div>
+          <div class="stat-row">
+            <span>🎯 Total Hits</span>
+            <strong id="total-hits-display">0</strong>
+          </div>
+
+          <div class="energy-bar-section">
+            <div class="energy-label">
+              <span>⚡ Energy</span>
+              <span id="energy-val">100 / 100</span>
+            </div>
+            <div class="energy-bar-track">
+              <div id="energy-bar" class="energy-bar-fill"></div>
+            </div>
+          </div>
+
+          <div class="milestone-section">
+            <h4>🏅 Milestones</h4>
+            <div id="milestones-list" class="milestones-list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== UPGRADES TAB ========== -->
+    <section id="tab-content-upgrades" class="tab-content">
+      <div class="section-header">
+        <h2>🔧 Upgrades Shop</h2>
+        <p>Spend coins to power up your hammer and energy</p>
+      </div>
+      <div id="upgrades-grid" class="upgrades-grid"></div>
+    </section>
+
+    <!-- ========== STORE TAB ========== -->
+    <section id="tab-content-store" class="tab-content">
+      <div class="section-header">
+        <h2>🛒 Item Store</h2>
+        <p>Buy special power-ups and lucky boxes</p>
+      </div>
+      <div id="store-grid" class="store-grid"></div>
+    </section>
+
+    <!-- ========== LEADERBOARD TAB ========== -->
+    <section id="tab-content-leaderboard" class="tab-content">
+      <div class="section-header">
+        <h2>🏆 Leaderboard</h2>
+        <p>Top players by coins earned</p>
+      </div>
+      <div class="leaderboard-container">
+        <div id="leaderboard-podium" class="leaderboard-podium"></div>
+        <div id="leaderboard-list" class="leaderboard-list"></div>
+      </div>
+    </section>
+
+    <!-- ========== HISTORY TAB ========== -->
+    <section id="tab-content-history" class="tab-content">
+      <div class="section-header">
+        <h2>📜 Transaction History</h2>
+        <p>Your recent coin activity</p>
+      </div>
+      <div id="history-list" class="history-list"></div>
+    </section>
+
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- Level Up Modal -->
+  <div id="levelup-modal" class="modal-overlay hidden">
+    <div class="modal-box levelup-box">
+      <div class="levelup-effect">🌟</div>
+      <h2>LEVEL UP!</h2>
+      <p id="levelup-text">You reached Level 2!</p>
+      <button id="levelup-close" class="btn btn-primary">Awesome! 🎉</button>
+    </div>
+  </div>
+
+  <!-- Lucky Box Modal -->
+  <div id="lucky-modal" class="modal-overlay hidden">
+    <div class="modal-box lucky-box-reveal">
+      <div class="lucky-effect">🎁</div>
+      <h2>Lucky Box!</h2>
+      <p id="lucky-text">You won 0 coins!</p>
+      <button id="lucky-close" class="btn btn-primary">Collect! 🪙</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
